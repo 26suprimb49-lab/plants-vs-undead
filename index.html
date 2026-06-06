@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="gameContainer">
+    <div id="ui-layer">
+      <div id="top-bar">
+        <div id="sun-counter"><canvas id="sun-icon" width="128" height="128" style="width:64px;height:64px;"></canvas><span id="sun-amount">50</span></div>
+        <div id="plant-selector">
+          <div class="plant-btn" data-plant="peashooter" data-label="Peashooter" onclick="game.selectPlant('peashooter')">🟢<br>Peashooter<br>100☀️</div>
+          <div class="plant-btn" data-plant="sunflower" data-label="Sunflower" onclick="game.selectPlant('sunflower')">🌻<br>Sunflower<br>50☀️</div>
+          <div class="plant-btn" data-plant="wallnut" data-label="Wall-nut" onclick="game.selectPlant('wallnut')">🟤<br>Wall-nut<br>50☀️</div>
+          <div class="plant-btn" data-plant="snowpea" data-label="Snow Pea" onclick="game.selectPlant('snowpea')">🔵<br>Snow Pea<br>175☀️</div>
+          <div class="plant-btn" data-plant="repeater" data-label="Repeater" onclick="game.selectPlant('repeater')">🟢<br>Repeater<br>200☀️</div>
+          <div class="plant-btn" data-plant="potato_mine" data-label="Potato Mine" onclick="game.selectPlant('potato_mine')">🥔<br>Potato Mine<br>25☀️</div>
+          <div class="plant-btn" data-plant="chomper" data-label="Chomper" onclick="game.selectPlant('chomper')">🟣<br>Chomper<br>150☀️</div>
+        </div>
+        <div id="shovel-btn" onclick="game.toggleShovel()" style="pointer-events:auto;cursor:pointer;min-width:68px;width:68px;height:80px;box-sizing:border-box;flex-shrink:0;padding:6px 8px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(180deg, rgba(140,100,40,0.85) 0%, rgba(90,60,20,0.9) 100%);border:3px solid rgba(255,255,255,0.15);border-radius:10px;color:white;font-size:11px;text-align:center;user-select:none;font-family:'Fredoka','Arial',sans-serif;font-weight:500;box-shadow:0 4px 12px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.2);transition:transform 0.15s ease,box-shadow 0.15s ease,border-color 0.2s ease,background 0.2s ease;"><canvas id="shovel-icon" width="64" height="72" style="width:54px;height:62px;"></canvas></div>
+      </div>
+      <div id="start-wave-btn" onclick="game.startSandboxWave()" style="pointer-events:auto;cursor:pointer;position:absolute;bottom:24px;right:24px;padding:16px 36px;background:linear-gradient(180deg,rgba(180,40,40,0.85),rgba(120,20,20,0.9));border:2px solid rgba(255,255,255,0.15);border-radius:12px;color:white;font-size:20px;font-family:'Fredoka','Arial',sans-serif;font-weight:600;user-select:none;box-shadow:0 4px 16px rgba(0,0,0,0.5);transition:transform 0.15s,background 0.2s;z-index:10;display:none;letter-spacing:2px;">Start Wave</div>
+      <div id="reset-view-btn" onclick="game.resetCamera()" style="pointer-events:auto;cursor:pointer;position:absolute;top:130px;right:16px;padding:8px 14px;background:linear-gradient(180deg,rgba(60,60,60,0.85),rgba(30,30,30,0.9));border:2px solid rgba(255,255,255,0.15);border-radius:8px;color:white;font-size:12px;font-family:'Fredoka','Arial',sans-serif;font-weight:500;user-select:none;box-shadow:0 2px 8px rgba(0,0,0,0.4);transition:transform 0.15s,background 0.2s;z-index:10;"><span style="font-size:18px;">⟳</span> Reset View</div>
+      <div id="wave-bar-container">
+        <div id="wave-level-label">Level 1</div>
+        <div id="wave-bar-track" style="flex:1;">
+          <div id="wave-bar-fill"></div>
+          <div id="wave-flags"></div>
+          <div id="wave-head">🧟</div>
+        </div>
+        <div id="wave-bar-labels"><span id="wave-label-left"></span><span id="wave-label-right">FINAL WAVE</span></div>
+      </div>
+      <div id="start-screen">
+        <div id="start-inner">
+          <div id="start-title-bar"></div>
+          <div id="start-content">
+            <div id="start-characters">
+              <img id="start-peashooter" style="width:100px;height:100px;">
+              <img id="start-zombie" style="width:100px;height:100px;">
+            </div>
+            <div id="start-title">
+              <span class="title-plants">PLANTS</span>
+              <span class="title-vs">vs</span>
+              <span class="title-zombies">UNDEAD</span>
+            </div>
+            <div id="start-subtitle">3D EDITION</div>
+            <div id="start-divider"></div>
+            <p id="start-desc">Defend your lawn from the zombies.<br>Place plants on the grid and collect sun to survive.</p>
+            <div style="display:flex;gap:12px;justify-content:center;align-items:center;">
+            <button id="start-btn" onclick="game.startGame()">PLAY</button>
+            <button id="sandbox-btn" onclick="game.startSandbox()">SANDBOX</button>
+            </div>
+            <button id="select-level-btn" onclick="document.getElementById('level-select-panel').style.display=document.getElementById('level-select-panel').style.display==='none'?'block':'none'">SELECT LEVEL</button>
+            <div id="level-select-panel" style="display:none;margin-top:12px;">
+              <div id="level-grid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;">
+                <button class="level-btn" onclick="game.startLevel(1)">1</button>
+                <button class="level-btn" onclick="game.startLevel(2)">2</button>
+                <button class="level-btn" onclick="game.startLevel(3)">3</button>
+                <button class="level-btn" onclick="game.startLevel(4)">4</button>
+                <button class="level-btn" onclick="game.startLevel(5)">5</button>
+                <button class="level-btn" onclick="game.startLevel(6)">6</button>
+                <button class="level-btn" onclick="game.startLevel(7)">7</button>
+                <button class="level-btn" onclick="game.startLevel(8)">8</button>
+                <button class="level-btn" onclick="game.startLevel(9)">9</button>
+                <button class="level-btn" onclick="game.startLevel(10)">10</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div id="game-over" style="display:none;">
+        <div id="gameover-inner">
+          <div id="gameover-zombie-img"></div>
+          <h1>GAME OVER</h1>
+          <div id="gameover-divider"></div>
+          <p>The zombies ate your brains!</p>
+          <div id="gameover-stats"></div>
+          <button id="gameover-restart-btn" onclick="game.restartLevel()">RESTART LEVEL</button>
+          <button id="gameover-menu-btn" onclick="game.returnToMenu()">MAIN MENU</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.182.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.182.0/examples/jsm/"
+    }
+  }
+  </script>
+  <script type="module">
+    import * as THREE from 'three';
+    window.THREE = THREE;
+  </script>
+  <script src="GameObject3D.js"></script>
+  <script src="Tile.js"></script>
+  <script src="Plant.js"></script>
+  <script src="Zombie.js"></script>
+  <script src="Projectile.js"></script>
+  <script src="Sun.js"></script>
+  <script src="LawnMower.js"></script>
+  <script src="Game.js"></script>
+  <script>
+    const game = new Game();
+    window.game = game;
+    game.start();
+  </script>
+</body>
+</html>
